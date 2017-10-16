@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Ajax2--请求json数据</title>
+</head>
+<body>
+	<button id="button1">请求单个数据</button>
+	<button id="button2">请求所有数据</button>
+	<h1>单个数据</h1>
+	<div id="user"></div>
+	<h1>所有数据</h1>
+	<div id="users"></div>
+</body>
+<script type="text/javascript">
+	document.getElementById('button1').addEventListener('click',loadUser);
+	function loadUser() {
+		var xhr = new XMLHttpRequest();
+		xhr.open('GET',"user.json",true);
+		xhr.onload = function(){
+			if(this.status == 200){
+				// console.log(this.responseText);//json数据
+				// var user = this.responseText;
+				// console.log(user.name);//undefined
+				//将获取的json解析为对象
+				var user = JSON.parse(this.responseText);
+				console.log(user.name);
+				var output = '';
+				output += `
+					<ul>
+						<li>ID:${user.id}</li>
+						<li>NAME:${user.name}</li>
+						<li>EMAIL:${user.email}</li>
+					</ul>
+				`;
+				document.getElementById('user').innerHTML = output;
+			}
+		}
+		xhr.send();
+	}
+
+	document.getElementById('button2').addEventListener('click',loadUsers);
+	function loadUsers(){
+		var xhr = new XMLHttpRequest();
+		xhr.open('GET','users.json',true);
+		xhr.onload = function(){
+			if(this.status == 200){
+				var users = JSON.parse(this.responseText);
+				var outputs = '';
+				// for(var i = 0;i<users.length;i++){
+					for(var i in users){
+					outputs += `
+						<ul>
+							<li>ID:${users[i].id}</li>
+							<li>NAME:${users[i].name}</li>
+							<li>EMAIL:${users[i].email}</li>
+						</ul>
+					`;
+				}
+				document.getElementById('users').innerHTML = outputs;
+				
+			}
+		}
+		xhr.send();
+	}
+</script>
+</html>
