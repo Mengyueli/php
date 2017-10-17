@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Ajax4 --请求PHP接口(后台语言)</title>
+</head>
+<body>
+	<button id="button">获取数据</button>
+	<div id="process"></div>
+	<!-- get -->
+	<h1>GET FORM</h1>
+	<form action="process.php" id="getForm">
+		<input type="text" name="name" id="name1">
+		<input type="submit" value="Submit">
+	</form>
+
+	<!-- post -->
+	<h1>POST FORM</h1>
+	<form action="process.php" method="post">
+		<input type="text" name="name" id="name">
+		<input type="submit" value="Submit">
+	</form>
+	<!-- ajax post -->
+	<h1>AJAX POST FORM</h1>
+	<form action="process.php" id="postForm">
+		<input type="text" name="name" id="name2">
+		<input type="submit" value="Submit">
+	</form>
+</body>
+<script type="text/javascript">
+	document.getElementById('button').addEventListener('click',getData);
+	
+	
+	function getData(){
+		var xhr = new XMLHttpRequest();
+		xhr.open('GET','process.php',true);
+		// xhr.onreadystatechange = function(){
+		// 	if(this.status == 200 && this.readyState == 4){
+		// 		console.log(this.responseText);
+		// 	}
+		// }
+		xhr.onload = function(){
+			if(this.readyState == 4){
+				console.log(this.responseText);
+			}
+		}
+		xhr.send();
+	}
+	//post submit方法重新写的（不会跳转到PHP界面，系统默认的会跳转到PHP界面）
+	// 自己重新写的submit input里的method可以不写
+	document.getElementById('getForm').addEventListener('submit',getData2);
+	function getData2(e){
+		e.preventDefault();
+		var name = document.getElementById("name1").value;
+		var xhr = new XMLHttpRequest();
+		// xhr.open('GET','process.php?name=Henry',true);
+		xhr.open('GET','process.php?name='+name,true);
+		xhr.onreadystatechange = function(){
+			if(this.status == 200 && this.readyState == 4){
+				document.getElementById('process').innerHTML = this.responseText;
+			}
+		}
+		xhr.send();
+	}
+	//ajax post方法请求数据 submit自己写的
+	document.getElementById('postForm').addEventListener('submit',postData);
+	function postData(e){
+		e.preventDefault();
+		var name = document.getElementById("name2").value;
+		var params = "name="+name;
+		var xhr = new XMLHttpRequest();
+		// xhr.open('GET','process.php?name=Henry',true);
+		xhr.open('POST','process.php',true);
+		//post请求一定要设置请求头
+		xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded"); 
+		xhr.onreadystatechange = function(){
+			if(this.status == 200 && this.readyState == 4){
+				console.log(this.responseText);
+				document.getElementById('process').innerHTML = this.responseText;
+				
+			}
+		}
+		xhr.send(params);//参数1：null，参数二：准备好的参数
+	}
+</script>
+</html>
